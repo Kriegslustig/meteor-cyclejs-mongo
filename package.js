@@ -1,24 +1,24 @@
+/* global Package */
+/* global Npm */
+
 Package.describe({
-  name: 'cyclejs-mongo',
-  version: '0.0.1',
-  // Brief, one-line summary of the package.
-  summary: '',
-  // URL to the Git repository containing the source code for this package.
-  git: '',
-  // By default, Meteor will default to using README.md for documentation.
-  // To avoid submitting documentation, set this field to null.
+  name: 'kriegslustig:cyclejs-mongo',
+  version: '0.1.0',
+  summary: 'A Cycle.js driver for the Mongo interface',
+  git: 'https://github.com/kriegslustig/meteor-cyclejs-mongo',
   documentation: 'README.md'
-});
+})
 
-Package.onUse(function(api) {
-  api.versionsFrom('1.3.2.4');
-  api.use('ecmascript');
-  api.mainModule('cyclejs-mongo.js');
-});
+Package.onUse(function (api) {
+  api.versionsFrom('1.3.2.4')
+  api.use(['ecmascript', 'mongo', 'tracker', 'meteor'])
+  api.mainModule('main.js')
+  Npm.depends({ rx: '4.1.0' })
+})
 
-Package.onTest(function(api) {
-  api.use('ecmascript');
-  api.use('tinytest');
-  api.use('cyclejs-mongo');
-  api.mainModule('cyclejs-mongo-tests.js');
-});
+Package.onTest(function (api) {
+  api.use('ecmascript')
+  api.use('tinytest')
+  api.use('kriegslustig:cyclejs-mongo')
+  api.mainModule('tests.js')
+})
