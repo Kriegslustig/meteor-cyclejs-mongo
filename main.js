@@ -42,7 +42,7 @@ const observableFromReactiveFn = (fn, ...args) =>
 const collection = {
   find (...args) {
     return observableFromReactiveFn(() =>
-      this.collection(...args).fetch()
+      this.collection.find(...args).fetch()
     )
   },
   findOne (...args) {
