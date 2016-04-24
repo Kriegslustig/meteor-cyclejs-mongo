@@ -17,7 +17,7 @@ export const makeMongoDriver = (...collectionsArr) => {
       if (!c) throw new Meteor.Error(`Undefined collection ${ck}`)
       const ak = req.action || req.a || req[1]
       if (!c[ak]) throw new Meteor.Error(`No such action ${ak}`)
-      const args = req.arguments || req.args || req.slice(2)
+      const args = req.arguments || req.s || req.slice(2)
       Array.prototype.isPrototypeOf(args)
         ? c[ak](...args)
         : c[ak](args)
@@ -35,12 +35,21 @@ export const createCollection = (name) => {
 
 export const _collection = {
   find (...args) {
-    return observableFromReactiveFn(() =>
-      this.collection.find(...args).fetch()
-    )
+    if (Meteor.isClient) {
+      return observableFromReactiveFn(() =>
+        this.collection.find(...args).fetch()
+      )
+    } else {
+      return Rx.Observable.from([this.collection.find(...args).fetch()])
+    }
   },
+
   findOne (...args) {
-    return observableFromReactiveFn(() => this.collection.findOne(...args))
+    if (Meteor.isClient) {
+      return observableFromReactiveFn(() => this.collection.findOne(...args))
+    } else {
+      return Rx.Observable.from([this.collection.findOne(...args)])
+    }
   }
 }
 
