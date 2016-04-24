@@ -6,7 +6,7 @@ import Rx from 'rx'
 
 export const makeMongoDriver = (...collectionsArr) => {
   const collections = collectionsArr.reduce((m, c) => {
-    if (!collection.isPrototypeOf(c)) throw Meteor.Error('Use the cyclejs-mongo createCollection function to create collections')
+    if (!_collection.isPrototypeOf(c)) throw Meteor.Error('Use the cyclejs-mongo createCollection function to create collections')
     m[c.collection._name] = c.collection
     return m
   }, {})
@@ -26,20 +26,14 @@ export const makeMongoDriver = (...collectionsArr) => {
 }
 
 export const createCollection = (name) => {
-  const c = Object.create(collection)
-  c.collection = new Mongo.Collection(name)
+  const c = Object.create(_collection)
+  c.collection = typeof name === 'string'
+    ? new Mongo.Collection(name)
+    : name
   return c
 }
 
-const observableFromReactiveFn = (fn, ...args) =>
-  Rx.Observable.create((observer) => {
-    Tracker.autorun(() => {
-      observer.onNext(fn(...args))
-    })
-    return () => {}
-  })
-
-const collection = {
+export const _collection = {
   find (...args) {
     return observableFromReactiveFn(() =>
       this.collection.find(...args).fetch()
@@ -49,4 +43,12 @@ const collection = {
     return observableFromReactiveFn(() => this.collection.findOne(...args))
   }
 }
+
+const observableFromReactiveFn = (fn, ...args) =>
+  Rx.Observable.create((observer) => {
+    Tracker.autorun(() => {
+      observer.onNext(fn(...args))
+    })
+    return () => {}
+  })
 
