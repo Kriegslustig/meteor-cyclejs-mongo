@@ -18,7 +18,8 @@ Package.onUse(function (api) {
 
 Package.onTest(function (api) {
   api.use('ecmascript')
-  api.use('tinytest')
+  api.use(['tinytest', 'mongo'])
   api.use('kriegslustig:cyclejs-mongo')
+  Npm.depends({ rx: '4.1.0' })
   api.mainModule('tests.js')
 })
