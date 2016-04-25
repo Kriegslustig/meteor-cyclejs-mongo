@@ -4,6 +4,10 @@ import { Tracker } from 'meteor/tracker'
 
 import Rx from 'rx'
 
+/**
+ * @param {...Collection} collectionsArr Collections that should be manipulatable.
+ * @return {Cycle.Driver} A Cycle driver that can be passed to Cycle.run.
+ */
 export const makeMongoDriver = (...collectionsArr) => {
   const collections = collectionsArr.reduce((m, c) => {
     if (!_collection.isPrototypeOf(c)) throw Meteor.Error('Use the cyclejs-mongo createCollection function to create collections')
@@ -25,6 +29,10 @@ export const makeMongoDriver = (...collectionsArr) => {
   }
 }
 
+/**
+ * @param {string} name The name of the collection.
+ * @return {CycleMongo.Collection} The collection Rx container
+ */
 export const createCollection = (name) => {
   const c = Object.create(_collection)
   c.collection = typeof name === 'string'
@@ -33,6 +41,10 @@ export const createCollection = (name) => {
   return c
 }
 
+/**
+ * A Rx container for a Mongo collection
+ * @typedef {collection: Mongo.Collection} CycleMongo.Collection
+ */
 export const _collection = {
   find (...args) {
     if (Meteor.isClient) {
